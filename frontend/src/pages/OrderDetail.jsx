@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { MessageCircle, Mail, MessageSquare, Crown, ArrowLeft, Check, Bell } from "lucide-react";
+import { MessageCircle, Mail, MessageSquare, Crown, ArrowLeft, Check, Bell, Archive } from "lucide-react";
 import { toast } from "sonner";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
