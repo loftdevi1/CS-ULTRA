@@ -73,6 +73,7 @@ class OrderUpdate(BaseModel):
     touchpoints: Optional[Touchpoints] = None
     stages: Optional[OrderStage] = None
     notes: Optional[str] = None
+    custom_reminder: Optional[CustomReminder] = None
 
 class Order(BaseModel):
     model_config = ConfigDict(extra="ignore")
