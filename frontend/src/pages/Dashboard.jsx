@@ -165,7 +165,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-4 md:p-6 max-w-[1800px] mx-auto" data-testid="dashboard">
+    <div className="p-4 md:p-6 max-w-[1800px] mx-auto pr-16 lg:pr-6" data-testid="dashboard">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 md:mb-6 gap-4">
         <div>
