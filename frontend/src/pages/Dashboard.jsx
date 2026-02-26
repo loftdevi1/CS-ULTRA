@@ -323,12 +323,6 @@ export default function Dashboard() {
                   Unfulfilled
                 </TabsTrigger>
                 <TabsTrigger 
-                  value="pending"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent text-xs md:text-sm px-3 md:px-4 whitespace-nowrap"
-                >
-                  Pending
-                </TabsTrigger>
-                <TabsTrigger 
                   value="high_priority"
                   className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent text-xs md:text-sm px-3 md:px-4 whitespace-nowrap"
                 >
