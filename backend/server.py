@@ -92,6 +92,7 @@ class Order(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     last_updated: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     is_high_priority: bool = False
+    is_archived: bool = False
 
 class EmailRequest(BaseModel):
     recipient_email: EmailStr
