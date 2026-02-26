@@ -66,25 +66,24 @@ export default function Dashboard() {
   const applyFilter = (tab) => {
     let filtered = [...allOrders];
     
-    // First, filter out all delivered orders from active tabs
-    if (tab !== "completed") {
-      filtered = filtered.filter(o => !o.stages.delivered);
-    }
-    
     switch (tab) {
       case "unfulfilled":
-        // Only show orders that haven't been dispatched yet
-        filtered = filtered.filter(o => !o.stages.sent_to_delhi && !o.stages.left_xportel && !o.stages.reached_country && !o.stages.delivered);
+        // Only show orders that haven't been dispatched yet and not archived
+        filtered = filtered.filter(o => !o.is_archived && !o.stages.sent_to_delhi && !o.stages.left_xportel && !o.stages.reached_country && !o.stages.delivered);
         break;
       case "high_priority":
-        filtered = filtered.filter(o => o.is_high_priority && !o.stages.delivered);
+        filtered = filtered.filter(o => !o.is_archived && o.is_high_priority && !o.stages.delivered);
         break;
       case "completed":
-        filtered = filtered.filter(o => o.stages.delivered);
+        filtered = filtered.filter(o => !o.is_archived && o.stages.delivered);
+        break;
+      case "archived":
+        filtered = filtered.filter(o => o.is_archived);
         break;
       case "all":
       default:
-        // Already filtered out delivered orders above
+        // Show all except archived and delivered
+        filtered = filtered.filter(o => !o.is_archived && !o.stages.delivered);
         break;
     }
     
