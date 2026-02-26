@@ -449,7 +449,7 @@ export default function Dashboard() {
       </Card>
 
       {/* Completed Orders Section */}
-      {completedOrders.length > 0 && (
+      {completedOrders.length > 0 && activeTab !== "completed" && (
         <Card className="border-border">
           <CardHeader className="border-b border-border/50">
             <div className="flex items-center gap-2">
