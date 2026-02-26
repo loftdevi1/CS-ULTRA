@@ -163,6 +163,10 @@ async def get_orders(filter: Optional[str] = None):
         # Ensure touchpoints.notes exists
         if 'touchpoints' in order and 'notes' not in order['touchpoints']:
             order['touchpoints']['notes'] = ""
+        
+        # Ensure is_archived exists
+        if 'is_archived' not in order:
+            order['is_archived'] = False
     
     # Sort by created_at descending (newest first)
     orders.sort(key=lambda x: x['created_at'], reverse=True)
