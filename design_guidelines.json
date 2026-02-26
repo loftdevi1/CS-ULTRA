@@ -1,0 +1,209 @@
+{
+  "identity": {
+    "name": "Kashmkari Support",
+    "tone": "Heritage Luxury, Artisanal, Timeless, Efficient",
+    "aesthetic": "Kashmiri Craftsmanship meets Modern Utility",
+    "keywords": ["Royal", "Intricate", "Gold", "Crimson", "Velvet", "Paper"]
+  },
+  "typography": {
+    "font_family": {
+      "heading": "\"Playfair Display\", serif",
+      "body": "\"Inter\", sans-serif",
+      "mono": "\"JetBrains Mono\", monospace"
+    },
+    "imports": [
+      "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@100..900&display=swap"
+    ],
+    "scale": {
+      "h1": "text-4xl md:text-5xl font-serif font-medium tracking-tight",
+      "h2": "text-3xl md:text-4xl font-serif font-medium tracking-tight",
+      "h3": "text-2xl md:text-3xl font-serif font-medium",
+      "h4": "text-xl md:text-2xl font-serif font-medium",
+      "body": "text-base font-sans tracking-wide leading-relaxed",
+      "small": "text-sm font-sans tracking-wide text-muted-foreground",
+      "tiny": "text-xs font-sans tracking-widest uppercase"
+    }
+  },
+  "colors": {
+    "light": {
+      "background": "#FDFCF8", 
+      "foreground": "#1A1A1A",
+      "card": "#FFFFFF",
+      "card_foreground": "#1A1A1A",
+      "popover": "#FFFFFF",
+      "popover_foreground": "#1A1A1A",
+      "primary": "#8B0000",
+      "primary_foreground": "#FFFFFF",
+      "secondary": "#F4F1EA",
+      "secondary_foreground": "#1A1A1A",
+      "muted": "#F4F1EA",
+      "muted_foreground": "#6B6B6B",
+      "accent": "#C5A059",
+      "accent_foreground": "#FFFFFF",
+      "destructive": "#991B1B",
+      "destructive_foreground": "#FFFFFF",
+      "border": "#E5E0D6",
+      "input": "#E5E0D6",
+      "ring": "#8B0000"
+    },
+    "dark": {
+      "background": "#0F0F0F",
+      "foreground": "#EDEDED",
+      "card": "#1A1A1A",
+      "card_foreground": "#EDEDED",
+      "popover": "#1A1A1A",
+      "popover_foreground": "#EDEDED",
+      "primary": "#A61B1B",
+      "primary_foreground": "#FFFFFF",
+      "secondary": "#2A2A2A",
+      "secondary_foreground": "#EDEDED",
+      "muted": "#2A2A2A",
+      "muted_foreground": "#A1A1AA",
+      "accent": "#D4AF37",
+      "accent_foreground": "#000000",
+      "destructive": "#7F1D1D",
+      "destructive_foreground": "#EDEDED",
+      "border": "#333333",
+      "input": "#333333",
+      "ring": "#A61B1B"
+    },
+    "brand_specific": {
+      "kashmiri_red": "#8B0000",
+      "antique_gold": "#C5A059",
+      "midnight_blue": "#1B1F3B",
+      "ivory_paper": "#FDFCF8",
+      "deep_charcoal": "#1A1A1A",
+      "whatsapp_green": "#25D366",
+      "email_gold": "#C5A059",
+      "crisp_blue": "#1C7CD5",
+      "touchpoint_inactive": "#A1A1AA"
+    }
+  },
+  "visual_enhancers": {
+    "borders": "border border-border",
+    "radius": "rounded-sm", 
+    "shadows": {
+      "card": "shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-all duration-300",
+      "dropdown": "shadow-xl border border-border/50",
+      "button": "shadow-sm active:shadow-inner"
+    },
+    "textures": {
+      "paper": "bg-[#FDFCF8] relative before:absolute before:inset-0 before:bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')] before:opacity-30 before:pointer-events-none"
+    }
+  },
+  "layout_strategy": {
+    "dashboard": "grid grid-cols-1 md:grid-cols-12 gap-6 p-6 md:p-10 max-w-[1600px] mx-auto",
+    "bento_grid": {
+      "wrapper": "grid grid-cols-1 md:grid-cols-4 gap-4",
+      "hero": "col-span-1 md:col-span-2 row-span-2",
+      "tall": "col-span-1 row-span-2",
+      "standard": "col-span-1 row-span-1"
+    },
+    "spacing": {
+      "section_gap": "gap-8",
+      "card_padding": "p-6",
+      "container_padding": "px-4 md:px-8 py-8"
+    }
+  },
+  "components": {
+    "Button": {
+      "base": "font-sans uppercase tracking-widest text-xs font-semibold rounded-sm transition-all duration-200",
+      "variants": {
+        "default": "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm",
+        "outline": "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
+        "ghost": "hover:bg-accent hover:text-accent-foreground",
+        "gold": "bg-brand-gold text-white hover:bg-brand-gold/90"
+      }
+    },
+    "Card": {
+      "base": "bg-card text-card-foreground rounded-sm border border-border shadow-sm overflow-hidden",
+      "header": "p-6 border-b border-border/50 bg-secondary/20",
+      "content": "p-6"
+    },
+    "Badge": {
+      "base": "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+      "variants": {
+        "default": "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
+        "secondary": "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        "outline": "text-foreground",
+        "gold": "border-transparent bg-[#C5A059] text-white hover:bg-[#C5A059]/80",
+        "high_touch": "border-[#C5A059] text-[#C5A059] bg-[#C5A059]/10"
+      }
+    },
+    "Input": {
+      "base": "flex h-10 w-full rounded-sm border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+    }
+  },
+  "motion": {
+    "duration": "duration-300",
+    "ease": "ease-out",
+    "hover": "hover:-translate-y-1 hover:shadow-lg transition-all duration-300",
+    "list_item": "animate-in fade-in slide-in-from-bottom-2 duration-300"
+  },
+  "image_urls": {
+    "products": [
+      {
+        "url": "https://kashmkari.com/cdn/shop/files/WebBanner_jpg.jpg?v=1771584479",
+        "desc": "Hero Banner, intricate embroidery",
+        "category": "hero"
+      },
+      {
+        "url": "https://kashmkari.com/collections/hand-embroidered-shawls/products/sozni-hand-embroidered-pashmina-ruby-red-classic-floral-spiral",
+        "desc": "Ruby Red Pashmina",
+        "category": "product"
+      },
+      {
+         "url": "https://kashmkari.com/collections/hand-embroidered-shawls/products/bahaar-taupe-sozni-hand-embroidered-pashmina-jama-shawl-copy",
+         "desc": "Taupe Sozni Shawl",
+         "category": "product"
+      },
+      {
+        "url": "https://kashmkari.com/collections/pure-pashmina-cashmere-shawls/products/sozni-hand-embroidered-pashmina-ivory-flowing-paisley-wave",
+        "desc": "Ivory Paisley Shawl",
+        "category": "product"
+      }
+    ],
+    "textures": [
+      {
+        "url": "https://www.transparenttextures.com/patterns/cream-paper.png",
+        "desc": "Subtle paper texture for backgrounds",
+        "category": "texture"
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "1. THEME SETUP: Implement the custom color palette in `tailwind.config.js`. Use the provided hex codes for 'primary', 'secondary', 'accent', 'muted', etc. Extend the theme with 'brand-red' and 'brand-gold'.",
+    "2. FONT SETUP: Add the Google Fonts import to `index.css`. Set 'Playfair Display' as the font for all headings (h1-h4) and 'Inter' for body text.",
+    "3. LAYOUT: Build a 'Sidebar Layout' with a persistent left navigation. The sidebar should be dark (Midnight Blue or Deep Charcoal) with Gold text for active states.",
+    "4. DASHBOARD: Create a Bento Grid layout. Top row: Key Metrics (Total Orders, Pending Dispatch, High Touch Clients). Middle: Recent Orders Feed (List view). Right: Notifications/Reminders.",
+    "5. ORDER CARD: Design a custom card for orders. It MUST have: Order ID, Customer Name, Status (Badge), and the 3 Touchpoint Icons (WhatsApp, Email, Crisp). Logic: If `touchpoints.whatsapp` is true, icon is Green; else Grey. Same for others.",
+    "6. STAGES: Implement a visual stepper for the 8 stages: 'In Embroidery' -> 'Customizing' -> 'Washing' -> 'Ready to Dispatch' -> 'Sent to Delhi' -> 'Left Xportel' -> 'Reached Country' -> 'Delivered'.",
+    "7. HIGH TOUCH LOGIC: If order_value > 500 OR touchpoints_count > 3, display a 'High Priority' Gold Badge on the order card.",
+    "8. REMINDERS: Create a simple logic to show orders that haven't been updated in 5 days. Highlight them in Red on the dashboard.",
+    "9. FORMS: Use Shadcn Form components but style them with the 'Underlined' or 'Minimal' aesthetic defined in the Design System.",
+    "10. ICONS: Use Lucide-React. Map: WhatsApp -> MessageCircle, Email -> Mail, Crisp -> MessageSquare. Use 'Crown' for High Priority.",
+    "11. DATA-TESTID: Ensure every interactive element (buttons, inputs, cards) has a `data-testid` attribute for testing."
+  ],
+  "universal_guidelines": [
+    "You tend to converge toward generic, 'on distribution' outputs. In frontend design, this creates what users call the 'AI slop' aesthetic. Avoid this: make creative, distinctive frontends that surprise and delight.",
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy",
+    "Use glass-morphism effects with backdrop filters (12-24px blur)",
+    "You MUST NOT apply universal transition. Eg: transition: all. This results in breaking transforms. Always add transitions for specific interactive elements like button, input excluding transforms",
+    "You MUST NOT center align the app container, ie do not add .App { text-align: center; } in the css file. This disrupts the human natural reading flow of text",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠💭💡🔮 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Main agent relies on these image URLs. Missing categories (especially sponsor logos) = main agent will use placeholder text which is FORBIDDEN",
+    "Prioritize using pre-existing components from src/components/ui when applicable",
+    "Create new components that match the style and conventions of existing components when needed",
+    "Examine existing components to understand the project's component patterns before creating new ones",
+    "Components MUST use named exports (export const ComponentName = ...)",
+    "Pages MUST use default exports (export default function PageName() {...})",
+    "Use sonner for toasts",
+    "Sonner component are located in /app/src/components/ui/sonner.tsx"
+  ]
+}
