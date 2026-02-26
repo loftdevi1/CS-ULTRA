@@ -161,6 +161,29 @@ export default function OrderDetail() {
 
   const totalItems = order.product_items.reduce((sum, item) => sum + item.quantity, 0);
 
+  // Calculate days since order creation
+  const orderDate = new Date(order.order_date);
+  const today = new Date();
+  const daysSinceOrder = Math.floor((today - orderDate) / (1000 * 60 * 60 * 24));
+  
+  // Timeline milestones
+  const maxDays = 30; // 30 days total timeline
+  const milestones = [5, 10, 15, 20, 25, 30];
+  const progress = Math.min((daysSinceOrder / maxDays) * 100, 100);
+  
+  // Color coding based on days
+  const getTimelineColor = (days) => {
+    if (days <= 10) return "bg-green-500";
+    if (days <= 20) return "bg-yellow-500";
+    return "bg-red-500";
+  };
+  
+  const getTimelineBgColor = (days) => {
+    if (days <= 10) return "bg-green-100";
+    if (days <= 20) return "bg-yellow-100";
+    return "bg-red-100";
+  };
+
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto" data-testid="order-detail-page">
       <Button
