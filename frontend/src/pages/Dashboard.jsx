@@ -44,6 +44,7 @@ export default function Dashboard() {
 
   const fetchOrders = async () => {
     try {
+      const API = "https://cs-ultra-backend.onrender.com/api";
       const response = await axios.get(`${API}/orders`);
       setAllOrders(response.data);
     } catch (error) {
@@ -56,6 +57,7 @@ export default function Dashboard() {
 
   const fetchReminders = async () => {
     try {
+      const API = "https://cs-ultra-backend.onrender.com/api";
       const response = await axios.get(`${API}/reminders`);
       setReminders(response.data);
     } catch (error) {
