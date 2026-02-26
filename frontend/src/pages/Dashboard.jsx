@@ -145,7 +145,6 @@ export default function Dashboard() {
   const stats = {
     total: allOrders.length,
     unfulfilled: allOrders.filter(o => !o.stages.delivered).length,
-    pending: allOrders.filter(o => !o.stages.sent_to_delhi && !o.stages.delivered).length,
     highPriority: allOrders.filter(o => o.is_high_priority).length,
     completed: allOrders.filter(o => o.stages.delivered).length,
     totalItems: allOrders.reduce((sum, o) => sum + o.product_items.reduce((s, i) => s + i.quantity, 0), 0)
