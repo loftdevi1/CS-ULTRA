@@ -79,16 +79,16 @@ class Order(BaseModel):
     model_config = ConfigDict(extra="ignore")
     
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    order_number: str
     order_date: str
     customer_name: str
     customer_email: str
-    product_items: str
-    quantity: int
-    sku: str
+    product_items: List[ProductItem]
     amount: float
     notes: str = ""
     touchpoints: Touchpoints = Field(default_factory=Touchpoints)
     stages: OrderStage = Field(default_factory=OrderStage)
+    custom_reminder: CustomReminder = Field(default_factory=CustomReminder)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     last_updated: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     is_high_priority: bool = False
