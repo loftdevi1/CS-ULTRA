@@ -177,14 +177,24 @@ export default function ManageOrders() {
                   {selectedOrders.length} order{selectedOrders.length !== 1 ? 's' : ''} selected
                 </span>
               </div>
-              <Button
-                variant="destructive"
-                onClick={handleBulkDelete}
-                data-testid="bulk-delete-btn"
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete Selected
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={handleBulkArchive}
+                  data-testid="bulk-archive-btn"
+                >
+                  <Archive className="w-4 h-4 mr-2" />
+                  Archive Selected
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={handleBulkDelete}
+                  data-testid="bulk-delete-btn"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete Selected
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
