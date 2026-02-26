@@ -188,6 +188,30 @@ async def get_order(order_id: str):
     if isinstance(order['last_updated'], str):
         order['last_updated'] = datetime.fromisoformat(order['last_updated'])
     
+    # Handle legacy orders without order_number
+    if 'order_number' not in order or not order['order_number']:
+        order['order_number'] = f"ORD-{order['id'][:8]}"
+    
+    # Handle legacy orders with string product_items instead of list
+    if 'product_items' in order and isinstance(order['product_items'], str):
+        order['product_items'] = [{
+            "name": order['product_items'],
+            "quantity": order.get('quantity', 1),
+            "sku": order.get('sku', '')
+        }]
+    
+    # Ensure product_items exists
+    if 'product_items' not in order:
+        order['product_items'] = []
+    
+    # Ensure custom_reminder exists
+    if 'custom_reminder' not in order:
+        order['custom_reminder'] = {"days": 0, "time": "", "note": "", "is_active": False}
+    
+    # Ensure touchpoints.notes exists
+    if 'touchpoints' in order and 'notes' not in order['touchpoints']:
+        order['touchpoints']['notes'] = ""
+    
     return order
 
 @api_router.put("/orders/{order_id}", response_model=Order)
