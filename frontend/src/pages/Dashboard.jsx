@@ -449,6 +449,80 @@ export default function Dashboard() {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-border/30">
+              {filteredOrders.map((order) => {
+                const status = getOrderStatus(order.stages);
+                const fulfillment = getFulfillmentStatus(order.stages);
+                const totalItems = order.product_items.reduce((sum, item) => sum + item.quantity, 0);
+                
+                return (
+                  <div
+                    key={order.id}
+                    className="p-4 hover:bg-secondary/10 cursor-pointer transition-colors"
+                    onClick={() => navigate(`/orders/${order.id}`)}
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <Checkbox 
+                          checked={selectedOrders.includes(order.id)}
+                          onCheckedChange={() => toggleOrderSelection(order.id)}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-sm">#{order.order_number}</span>
+                            {order.is_high_priority && (
+                              <Crown className="w-4 h-4 text-brand-gold" />
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {formatDate(order.order_date)}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-1">
+                        <Badge className={`${fulfillment.color} text-xs`}>
+                          {fulfillment.label}
+                        </Badge>
+                        <Badge className={`${status.color} text-xs`}>
+                          {status.label}
+                        </Badge>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div>
+                        <p className="text-sm font-medium">{order.customer_name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {totalItems} {totalItems === 1 ? 'item' : 'items'} • ${order.amount.toFixed(2)}
+                        </p>
+                      </div>
+                      
+                      <div className="flex items-center gap-1.5">
+                        <MessageCircle
+                          className={`w-4 h-4 ${
+                            order.touchpoints.whatsapp ? "text-whatsapp-green" : "text-gray-300"
+                          }`}
+                        />
+                        <Mail
+                          className={`w-4 h-4 ${
+                            order.touchpoints.email ? "text-email-gold" : "text-gray-300"
+                          }`}
+                        />
+                        <MessageSquare
+                          className={`w-4 h-4 ${
+                            order.touchpoints.crisp ? "text-crisp-blue" : "text-gray-300"
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
           )}
         </CardContent>
       </Card>
