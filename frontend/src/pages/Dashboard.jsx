@@ -165,14 +165,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-6 max-w-[1800px] mx-auto" data-testid="dashboard">
+    <div className="p-4 md:p-6 max-w-[1800px] mx-auto" data-testid="dashboard">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 md:mb-6 gap-4">
         <div>
-          <h1 className="text-3xl font-serif font-medium tracking-tight">Orders</h1>
+          <h1 className="text-2xl md:text-3xl font-serif font-medium tracking-tight">Orders</h1>
           <p className="text-muted-foreground text-sm mt-1">{stats.total} total orders</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           <div className="relative">
             <Button 
               variant="outline" 
@@ -181,7 +181,7 @@ export default function Dashboard() {
               className="relative"
             >
               <Bell className="w-4 h-4 mr-2" />
-              Notifications
+              <span className="hidden sm:inline">Notifications</span>
               {reminders.length > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                   {reminders.length}
