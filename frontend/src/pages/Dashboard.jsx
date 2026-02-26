@@ -48,8 +48,8 @@ export default function Dashboard() {
     if (stages.delivered) return "Delivered";
     if (stages.reached_country) return "Reached Country";
     if (stages.left_xportel) return "In Transit";
-    if (stages.sent_to_delhi) return "Sent to Delhi";
-    if (stages.ready_to_dispatch) return "Ready to Dispatch";
+    if (stages.sent_to_delhi) return "Dispatched";
+    if (stages.ready_to_dispatch) return "Ready";
     if (stages.washing) return "Washing";
     if (stages.customizing) return "Customizing";
     if (stages.in_embroidery) return "In Embroidery";
