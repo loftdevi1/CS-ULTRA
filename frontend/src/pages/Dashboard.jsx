@@ -105,7 +105,10 @@ export default function Dashboard() {
   };
 
   const getFulfillmentStatus = (stages) => {
-    if (stages.delivered) return { label: "Fulfilled", color: "bg-gray-100 text-gray-800" };
+    // Once dispatched or beyond, it's fulfilled
+    if (stages.sent_to_delhi || stages.left_xportel || stages.reached_country || stages.delivered) {
+      return { label: "Fulfilled", color: "bg-gray-100 text-gray-800" };
+    }
     return { label: "Unfulfilled", color: "bg-yellow-100 text-yellow-800" };
   };
 
