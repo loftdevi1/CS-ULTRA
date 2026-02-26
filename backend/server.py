@@ -180,6 +180,8 @@ async def update_order(order_id: str, update: OrderUpdate):
         update_data['stages'] = update.stages.model_dump()
     if update.notes is not None:
         update_data['notes'] = update.notes
+    if update.custom_reminder:
+        update_data['custom_reminder'] = update.custom_reminder.model_dump()
     
     update_data['last_updated'] = datetime.now(timezone.utc).isoformat()
     
