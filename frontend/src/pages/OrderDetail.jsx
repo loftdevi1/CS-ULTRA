@@ -468,6 +468,100 @@ export default function OrderDetail() {
           </Card>
         </div>
       </div>
+
+      {/* Compact Order Age Timeline - Bottom */}
+      <Card className={`border ${getTimelineBgColor(daysSinceOrder)} mt-6`}>
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-4">
+              <div>
+                <p className="text-xs text-muted-foreground">Order Age</p>
+                <p className="text-xl font-serif font-medium">
+                  {daysSinceOrder} {daysSinceOrder === 1 ? 'day' : 'days'}
+                </p>
+              </div>
+              <div className="border-l border-border/50 pl-4">
+                <p className="text-xs text-muted-foreground">Status</p>
+                <p className="text-sm font-medium">
+                  {daysSinceOrder <= 10 && "✓ On Track"}
+                  {daysSinceOrder > 10 && daysSinceOrder <= 20 && "⚠ Monitor"}
+                  {daysSinceOrder > 20 && "⚠ Attention"}
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-muted-foreground">
+                Placed {new Date(order.order_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+              </p>
+              {daysSinceOrder <= 5 && (
+                <Badge variant="outline" className="text-xs mt-1">Should be in Embroidery</Badge>
+              )}
+              {daysSinceOrder > 5 && daysSinceOrder <= 10 && (
+                <Badge variant="outline" className="text-xs mt-1">Should be Customizing</Badge>
+              )}
+              {daysSinceOrder > 10 && daysSinceOrder <= 15 && (
+                <Badge variant="outline" className="text-xs mt-1 bg-yellow-50">Ready to Dispatch</Badge>
+              )}
+              {daysSinceOrder > 15 && daysSinceOrder <= 21 && (
+                <Badge variant="outline" className="text-xs mt-1 bg-yellow-50">Should be Dispatched</Badge>
+              )}
+              {daysSinceOrder > 21 && (
+                <Badge variant="outline" className="text-xs mt-1 bg-red-50 text-red-700 border-red-300">
+                  Overdue
+                </Badge>
+              )}
+            </div>
+          </div>
+
+          {/* Compact Timeline */}
+          <div className="space-y-1.5">
+            <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div 
+                className={`absolute top-0 left-0 h-full ${getTimelineColor(daysSinceOrder)} transition-all duration-500 rounded-full`}
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+
+            <div className="relative h-6">
+              <div className="absolute inset-0 flex justify-between items-center">
+                {milestones.map((milestone, index) => {
+                  const isReached = daysSinceOrder >= milestone;
+                  const isCurrent = daysSinceOrder >= milestone && (index === milestones.length - 1 || daysSinceOrder < milestones[index + 1]);
+                  const position = (milestone / maxDays) * 100;
+                  
+                  return (
+                    <div 
+                      key={milestone}
+                      className="flex flex-col items-center"
+                      style={{ position: 'absolute', left: `${position}%`, transform: 'translateX(-50%)' }}
+                    >
+                      <div 
+                        className={`w-2 h-2 rounded-full transition-all ${
+                          isReached 
+                            ? `${getTimelineColor(milestone)}` 
+                            : 'bg-gray-300'
+                        } ${isCurrent ? 'w-2.5 h-2.5 ring-1 ring-offset-1 ring-brand-gold' : ''}`}
+                      />
+                      <span className={`text-[10px] mt-0.5 ${isReached ? 'text-gray-700 font-medium' : 'text-gray-400'}`}>
+                        {milestone}d
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {daysSinceOrder < maxDays && (
+                <div 
+                  className="absolute top-0"
+                  style={{ left: `${progress}%`, transform: 'translateX(-50%)' }}
+                >
+                  <div className={`w-3 h-3 rounded-full ${getTimelineColor(daysSinceOrder)} border-2 border-white shadow animate-pulse`} />
+                </div>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
