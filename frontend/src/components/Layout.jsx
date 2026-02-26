@@ -18,7 +18,7 @@ export const Layout = ({ children }) => {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-brand-charcoal text-white rounded-md"
+        className="lg:hidden fixed top-4 right-4 z-50 p-2 bg-brand-charcoal text-white rounded-md shadow-lg"
       >
         {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
