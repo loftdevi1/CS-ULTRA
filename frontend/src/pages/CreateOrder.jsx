@@ -66,6 +66,7 @@ export default function CreateOrder() {
         ...formData,
         product_items: productItems,
       };
+      const API = "https://cs-ultra-backend.onrender.com/api";
       const response = await axios.post(`${API}/orders`, payload);
       toast.success("Order created successfully!");
       navigate(`/orders/${response.data.id}`);
