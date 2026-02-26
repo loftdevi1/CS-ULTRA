@@ -210,16 +210,27 @@ export default function OrderDetail() {
       </Button>
 
       <div className="mb-6 md:mb-8">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-          <h1 className="text-2xl md:text-4xl lg:text-5xl font-serif font-medium tracking-tight" data-testid="order-customer-name">
-            {order.customer_name}
-          </h1>
-          {order.is_high_priority && (
-            <Badge className="bg-brand-gold text-white border-brand-gold w-fit" data-testid="high-priority-badge">
-              <Crown className="w-4 h-4 mr-1" />
-              High Priority
-            </Badge>
-          )}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-serif font-medium tracking-tight" data-testid="order-customer-name">
+              {order.customer_name}
+            </h1>
+            {order.is_high_priority && (
+              <Badge className="bg-brand-gold text-white border-brand-gold w-fit" data-testid="high-priority-badge">
+                <Crown className="w-4 h-4 mr-1" />
+                High Priority
+              </Badge>
+            )}
+          </div>
+          <Button
+            variant="outline"
+            onClick={handleArchive}
+            className="w-fit"
+            data-testid="archive-order-btn"
+          >
+            <Archive className="w-4 h-4 mr-2" />
+            Archive Order
+          </Button>
         </div>
         <p className="text-sm md:text-base text-muted-foreground tracking-wide">Order #{order.order_number} • {order.id}</p>
       </div>
