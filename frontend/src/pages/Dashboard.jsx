@@ -14,16 +14,18 @@ export default function Dashboard() {
   const [orders, setOrders] = useState([]);
   const [reminders, setReminders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchOrders();
+    fetchOrders(filter);
     fetchReminders();
-  }, []);
+  }, [filter]);
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (filterType = null) => {
     try {
-      const response = await axios.get(`${API}/orders`);
+      const url = filterType ? `${API}/orders?filter=${filterType}` : `${API}/orders`;
+      const response = await axios.get(url);
       setOrders(response.data);
     } catch (error) {
       console.error("Failed to fetch orders:", error);
