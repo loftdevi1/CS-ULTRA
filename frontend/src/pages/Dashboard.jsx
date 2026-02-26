@@ -66,6 +66,11 @@ export default function Dashboard() {
   const applyFilter = (tab) => {
     let filtered = [...allOrders];
     
+    // First, filter out all delivered orders from active tabs
+    if (tab !== "completed") {
+      filtered = filtered.filter(o => !o.stages.delivered);
+    }
+    
     switch (tab) {
       case "unfulfilled":
         filtered = filtered.filter(o => !o.stages.delivered);
@@ -74,15 +79,14 @@ export default function Dashboard() {
         filtered = filtered.filter(o => !o.stages.sent_to_delhi && !o.stages.delivered);
         break;
       case "high_priority":
-        filtered = filtered.filter(o => o.is_high_priority);
+        filtered = filtered.filter(o => o.is_high_priority && !o.stages.delivered);
         break;
       case "completed":
         filtered = filtered.filter(o => o.stages.delivered);
         break;
       case "all":
       default:
-        // Show all except delivered
-        filtered = filtered.filter(o => !o.stages.delivered);
+        // Already filtered out delivered orders above
         break;
     }
     
