@@ -211,6 +211,115 @@ export default function OrderDetail() {
         <p className="text-muted-foreground tracking-wide">Order #{order.order_number} • {order.id}</p>
       </div>
 
+      {/* Order Age Timeline */}
+      <Card className={`border-2 ${getTimelineBgColor(daysSinceOrder)} mb-6`}>
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Order Age</p>
+                <p className="text-3xl font-serif font-medium mt-1">
+                  {daysSinceOrder} {daysSinceOrder === 1 ? 'day' : 'days'}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Placed on {new Date(order.order_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-medium text-muted-foreground">Expected Timeline</p>
+                <p className="text-lg font-medium mt-1">
+                  {daysSinceOrder <= 10 && "✓ On Track"}
+                  {daysSinceOrder > 10 && daysSinceOrder <= 20 && "⚠ Monitor Progress"}
+                  {daysSinceOrder > 20 && "⚠ Requires Attention"}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Target: 2-3 weeks dispatch
+                </p>
+              </div>
+            </div>
+
+            {/* Timeline Progress Bar */}
+            <div className="space-y-2">
+              <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
+                <div 
+                  className={`absolute top-0 left-0 h-full ${getTimelineColor(daysSinceOrder)} transition-all duration-500 rounded-full`}
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+
+              {/* Timeline Markers */}
+              <div className="relative h-12">
+                <div className="absolute inset-0 flex justify-between items-start">
+                  {milestones.map((milestone, index) => {
+                    const isReached = daysSinceOrder >= milestone;
+                    const isCurrent = daysSinceOrder >= milestone && (index === milestones.length - 1 || daysSinceOrder < milestones[index + 1]);
+                    const position = (milestone / maxDays) * 100;
+                    
+                    return (
+                      <div 
+                        key={milestone}
+                        className="flex flex-col items-center"
+                        style={{ position: 'absolute', left: `${position}%`, transform: 'translateX(-50%)' }}
+                      >
+                        <div 
+                          className={`w-3 h-3 rounded-full border-2 transition-all ${
+                            isReached 
+                              ? `${getTimelineColor(milestone)} border-transparent` 
+                              : 'bg-white border-gray-300'
+                          } ${isCurrent ? 'w-4 h-4 ring-2 ring-offset-2 ring-brand-gold' : ''}`}
+                        />
+                        <div className={`mt-2 text-xs font-medium ${isReached ? 'text-gray-900' : 'text-gray-400'}`}>
+                          Day {milestone}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Current Day Indicator */}
+                {daysSinceOrder < maxDays && (
+                  <div 
+                    className="absolute top-0"
+                    style={{ left: `${progress}%`, transform: 'translateX(-50%)' }}
+                  >
+                    <div className="flex flex-col items-center">
+                      <div className={`w-5 h-5 rounded-full ${getTimelineColor(daysSinceOrder)} border-4 border-white shadow-lg animate-pulse`} />
+                      <div className="mt-2 px-2 py-0.5 bg-gray-900 text-white text-xs font-bold rounded">
+                        TODAY
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Status Suggestions */}
+            <div className="pt-4 border-t border-border/50">
+              <p className="text-xs font-medium text-muted-foreground mb-2">Suggested Actions:</p>
+              <div className="flex flex-wrap gap-2">
+                {daysSinceOrder <= 5 && (
+                  <Badge variant="outline" className="text-xs">Should be in Embroidery stage</Badge>
+                )}
+                {daysSinceOrder > 5 && daysSinceOrder <= 10 && (
+                  <Badge variant="outline" className="text-xs">Should be in Customizing/Washing stage</Badge>
+                )}
+                {daysSinceOrder > 10 && daysSinceOrder <= 15 && (
+                  <Badge variant="outline" className="text-xs bg-yellow-50">Should be Ready to Dispatch</Badge>
+                )}
+                {daysSinceOrder > 15 && daysSinceOrder <= 21 && (
+                  <Badge variant="outline" className="text-xs bg-yellow-50">Should be Dispatched by now</Badge>
+                )}
+                {daysSinceOrder > 21 && (
+                  <Badge variant="outline" className="text-xs bg-red-50 text-red-700 border-red-300">
+                    Overdue - Contact customer with update
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Order Details */}
         <div className="lg:col-span-2 space-y-6">
