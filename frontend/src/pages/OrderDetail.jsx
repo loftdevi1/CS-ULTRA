@@ -42,6 +42,7 @@ export default function OrderDetail() {
 
   const fetchOrder = async () => {
     try {
+      const API = "https://cs-ultra-backend.onrender.com/api";
       const response = await axios.get(`${API}/orders/${orderId}`);
       setOrder(response.data);
       setTouchpointNotes(response.data.touchpoints.notes || "");
@@ -68,6 +69,7 @@ export default function OrderDetail() {
     };
 
     try {
+      const API = "https://cs-ultra-backend.onrender.com/api";
       const response = await axios.put(`${API}/orders/${orderId}`, {
         touchpoints: newTouchpoints,
       });
@@ -83,6 +85,7 @@ export default function OrderDetail() {
     if (!order) return;
 
     try {
+      const API = "https://cs-ultra-backend.onrender.com/api";
       const response = await axios.put(`${API}/orders/${orderId}`, {
         touchpoints: {
           ...order.touchpoints,
@@ -107,6 +110,7 @@ export default function OrderDetail() {
 
     setUpdating(true);
     try {
+      const API = "https://cs-ultra-backend.onrender.com/api";
       const response = await axios.put(`${API}/orders/${orderId}`, {
         stages: newStages,
       });
