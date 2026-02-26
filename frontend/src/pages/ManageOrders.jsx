@@ -44,6 +44,7 @@ export default function ManageOrders() {
 
   const fetchOrders = async () => {
     try {
+      const API = "https://cs-ultra-backend.onrender.com/api";
       const response = await axios.get(`${API}/orders`);
       setOrders(response.data);
     } catch (error) {
@@ -95,6 +96,7 @@ export default function ManageOrders() {
     if (!orderToDelete) return;
 
     try {
+      const API = "https://cs-ultra-backend.onrender.com/api";
       await axios.delete(`${API}/orders/${orderToDelete.id}`);
       toast.success(`Order #${orderToDelete.order_number} deleted`);
       setOrders(orders.filter(o => o.id !== orderToDelete.id));
