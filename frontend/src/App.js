@@ -4,6 +4,7 @@ import Dashboard from "@/pages/Dashboard";
 import CreateOrder from "@/pages/CreateOrder";
 import OrderDetail from "@/pages/OrderDetail";
 import Analytics from "@/pages/Analytics";
+import ManageOrders from "@/pages/ManageOrders";
 import Layout from "@/components/Layout";
 import "@/App.css";
 
@@ -17,6 +18,7 @@ function App() {
             <Route path="/create-order" element={<CreateOrder />} />
             <Route path="/orders/:orderId" element={<OrderDetail />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/manage-orders" element={<ManageOrders />} />
           </Routes>
         </Layout>
       </BrowserRouter>
