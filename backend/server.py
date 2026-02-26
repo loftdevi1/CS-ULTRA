@@ -297,6 +297,25 @@ async def send_email(request: EmailRequest):
         raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
 
 
+@api_router.delete("/orders/{order_id}")
+async def delete_order(order_id: str):
+    result = await db.orders.delete_one({"id": order_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    return {"message": "Order deleted successfully", "order_id": order_id}
+
+@api_router.post("/orders/bulk-delete")
+async def bulk_delete_orders(order_ids: List[str]):
+    result = await db.orders.delete_many({"id": {"$in": order_ids}})
+    
+    return {
+        "message": f"{result.deleted_count} orders deleted successfully",
+        "deleted_count": result.deleted_count
+    }
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
