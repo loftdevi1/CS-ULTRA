@@ -49,13 +49,23 @@ class OrderStage(BaseModel):
     reached_country: bool = False
     delivered: bool = False
 
+class ProductItem(BaseModel):
+    name: str
+    quantity: int
+    sku: str
+
+class CustomReminder(BaseModel):
+    days: int = 0
+    time: str = ""
+    note: str = ""
+    is_active: bool = False
+
 class OrderCreate(BaseModel):
+    order_number: str
     order_date: str
     customer_name: str
     customer_email: EmailStr
-    product_items: str
-    quantity: int
-    sku: str
+    product_items: List[ProductItem]
     amount: float
     notes: Optional[str] = ""
 
