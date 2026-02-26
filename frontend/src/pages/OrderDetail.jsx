@@ -140,6 +140,19 @@ export default function OrderDetail() {
     }
   };
 
+  const handleArchive = async () => {
+    if (!order) return;
+
+    try {
+      await axios.put(`${API}/orders/${orderId}/archive`);
+      toast.success("Order archived successfully");
+      navigate("/");
+    } catch (error) {
+      console.error("Failed to archive order:", error);
+      toast.error("Failed to archive order");
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen" data-testid="loading-state">
