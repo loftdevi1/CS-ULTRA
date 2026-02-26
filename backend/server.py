@@ -298,6 +298,42 @@ async def send_email(request: EmailRequest):
         raise HTTPException(status_code=500, detail=f"Failed to send email: {str(e)}")
 
 
+@api_router.put("/orders/{order_id}/archive")
+async def archive_order(order_id: str):
+    result = await db.orders.update_one(
+        {"id": order_id},
+        {"$set": {"is_archived": True, "last_updated": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    return {"message": "Order archived successfully", "order_id": order_id}
+
+@api_router.put("/orders/{order_id}/unarchive")
+async def unarchive_order(order_id: str):
+    result = await db.orders.update_one(
+        {"id": order_id},
+        {"$set": {"is_archived": False, "last_updated": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    return {"message": "Order unarchived successfully", "order_id": order_id}
+
+@api_router.post("/orders/bulk-archive")
+async def bulk_archive_orders(order_ids: List[str]):
+    result = await db.orders.update_many(
+        {"id": {"$in": order_ids}},
+        {"$set": {"is_archived": True, "last_updated": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    return {
+        "message": f"{result.modified_count} orders archived successfully",
+        "archived_count": result.modified_count
+    }
+
 @api_router.delete("/orders/{order_id}")
 async def delete_order(order_id: str):
     result = await db.orders.delete_one({"id": order_id})
