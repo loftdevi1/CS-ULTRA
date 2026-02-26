@@ -95,19 +95,27 @@ export default function Dashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" data-testid="stats-grid">
-        <Card className="border-border shadow-sm hover:shadow-md transition-shadow" data-testid="stat-total-orders">
+        <Card
+          className={`border-border shadow-sm hover:shadow-md transition-all cursor-pointer ${filter === null ? 'ring-2 ring-brand-red' : ''}`}
+          onClick={() => setFilter(null)}
+          data-testid="stat-total-orders"
+        >
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-sans text-muted-foreground tracking-widest uppercase">Total Orders</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
               <Package className="w-8 h-8 text-brand-red" />
-              <span className="text-4xl font-serif font-medium">{orders.length}</span>
+              <span className="text-4xl font-serif font-medium">{allOrders.length}</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-border shadow-sm hover:shadow-md transition-shadow" data-testid="stat-pending-dispatch">
+        <Card
+          className={`border-border shadow-sm hover:shadow-md transition-all cursor-pointer ${filter === 'pending' ? 'ring-2 ring-yellow-600' : ''}`}
+          onClick={() => setFilter('pending')}
+          data-testid="stat-pending-dispatch"
+        >
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-sans text-muted-foreground tracking-widest uppercase">Pending Dispatch</CardTitle>
           </CardHeader>
@@ -119,7 +127,11 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-border shadow-sm hover:shadow-md transition-shadow" data-testid="stat-high-priority">
+        <Card
+          className={`border-border shadow-sm hover:shadow-md transition-all cursor-pointer ${filter === 'high_priority' ? 'ring-2 ring-brand-gold' : ''}`}
+          onClick={() => setFilter('high_priority')}
+          data-testid="stat-high-priority"
+        >
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-sans text-muted-foreground tracking-widest uppercase">High Priority</CardTitle>
           </CardHeader>
