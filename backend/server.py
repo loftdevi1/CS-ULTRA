@@ -128,7 +128,7 @@ async def create_order(input: OrderCreate):
     return order_obj
 
 @api_router.get("/orders", response_model=List[Order])
-async def get_orders():
+async def get_orders(filter: Optional[str] = None):
     orders = await db.orders.find({}, {"_id": 0}).to_list(1000)
     
     # Convert ISO string timestamps back to datetime objects
@@ -137,6 +137,16 @@ async def get_orders():
             order['created_at'] = datetime.fromisoformat(order['created_at'])
         if isinstance(order['last_updated'], str):
             order['last_updated'] = datetime.fromisoformat(order['last_updated'])
+    
+    # Sort by created_at descending (newest first)
+    orders.sort(key=lambda x: x['created_at'], reverse=True)
+    
+    # Apply filters
+    if filter == "pending":
+        # Exclude orders that are sent to Delhi or beyond (dispatched)
+        orders = [o for o in orders if not (o['stages']['sent_to_delhi'] or o['stages']['left_xportel'] or o['stages']['reached_country'] or o['stages']['delivered'])]
+    elif filter == "high_priority":
+        orders = [o for o in orders if o['is_high_priority']]
     
     return orders
 
