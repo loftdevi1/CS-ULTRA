@@ -329,6 +329,12 @@ export default function Dashboard() {
                 >
                   Done
                 </TabsTrigger>
+                <TabsTrigger 
+                  value="archived"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent text-xs md:text-sm px-3 md:px-4 whitespace-nowrap"
+                >
+                  Archived
+                </TabsTrigger>
               </TabsList>
             </div>
           </Tabs>
