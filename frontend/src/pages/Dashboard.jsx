@@ -196,81 +196,82 @@ export default function Dashboard() {
             </Button>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-3">
             {orders.map((order) => {
               const status = getOrderStatus(order.stages);
               const touchpointCount = [order.touchpoints.whatsapp, order.touchpoints.email, order.touchpoints.crisp].filter(Boolean).length;
+              const totalItems = order.product_items.reduce((sum, item) => sum + item.quantity, 0);
               
               return (
                 <Card
                   key={order.id}
-                  className="border-border hover:shadow-lg transition-all cursor-pointer"
+                  className="border-border hover:shadow-md transition-all cursor-pointer"
                   onClick={() => navigate(`/orders/${order.id}`)}
                   data-testid={`order-card-${order.id}`}
                 >
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-xl font-serif font-medium" data-testid="order-customer-name">{order.customer_name}</h3>
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-4 flex-wrap">
+                      {/* Left: Customer Info */}
+                      <div className="flex-1 min-w-[200px]">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-lg font-serif font-medium" data-testid="order-customer-name">{order.customer_name}</h3>
                           {order.is_high_priority && (
-                            <Badge className="bg-brand-gold text-white border-brand-gold" data-testid="high-priority-badge">
+                            <Badge className="bg-brand-gold text-white border-brand-gold text-xs" data-testid="high-priority-badge">
                               <Crown className="w-3 h-3 mr-1" />
-                              High Priority
+                              VIP
                             </Badge>
                           )}
                         </div>
+                        <p className="text-xs text-muted-foreground">Order #{order.order_number}</p>
+                      </div>
+
+                      {/* Middle: Order Details */}
+                      <div className="flex gap-6 text-sm">
+                        <div>
+                          <p className="text-muted-foreground text-xs">Date</p>
+                          <p className="font-medium" data-testid="order-date">{order.order_date}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground text-xs">Items</p>
+                          <p className="font-medium" data-testid="order-items">{totalItems} item{totalItems !== 1 ? 's' : ''}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground text-xs">Amount</p>
+                          <p className="font-medium text-brand-red" data-testid="order-amount">${order.amount.toFixed(2)}</p>
+                        </div>
+                      </div>
+
+                      {/* Right: Status & Touchpoints */}
+                      <div className="flex items-center gap-4">
+                        <Badge className={getStatusColor(status)} data-testid="order-status">{status}</Badge>
                         
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
-                          <div>
-                            <p className="text-muted-foreground">Order Date</p>
-                            <p className="font-medium" data-testid="order-date">{order.order_date}</p>
-                          </div>
-                          <div>
-                            <p className="text-muted-foreground">Product</p>
-                            <p className="font-medium" data-testid="order-product">{order.product_items}</p>
-                          </div>
-                          <div>
-                            <p className="text-muted-foreground">Amount</p>
-                            <p className="font-medium text-brand-red" data-testid="order-amount">${order.amount.toFixed(2)}</p>
-                          </div>
-                          <div>
-                            <p className="text-muted-foreground">Quantity</p>
-                            <p className="font-medium" data-testid="order-quantity">{order.quantity}</p>
-                          </div>
+                        {/* Touchpoint Icons */}
+                        <div className="flex items-center gap-1.5" data-testid="touchpoint-indicators">
+                          <MessageCircle
+                            className={`w-4 h-4 ${
+                              order.touchpoints.whatsapp ? "text-whatsapp-green" : "text-gray-300"
+                            }`}
+                            data-testid="touchpoint-whatsapp"
+                          />
+                          <Mail
+                            className={`w-4 h-4 ${
+                              order.touchpoints.email ? "text-email-gold" : "text-gray-300"
+                            }`}
+                            data-testid="touchpoint-email"
+                          />
+                          <MessageSquare
+                            className={`w-4 h-4 ${
+                              order.touchpoints.crisp ? "text-crisp-blue" : "text-gray-300"
+                            }`}
+                            data-testid="touchpoint-crisp"
+                          />
                         </div>
 
-                        <div className="flex items-center gap-4">
-                          <Badge className={getStatusColor(status)} data-testid="order-status">{status}</Badge>
-                          
-                          {/* Touchpoint Icons */}
-                          <div className="flex items-center gap-2" data-testid="touchpoint-indicators">
-                            <MessageCircle
-                              className={`w-5 h-5 ${
-                                order.touchpoints.whatsapp ? "text-whatsapp-green" : "text-gray-300"
-                              }`}
-                              data-testid="touchpoint-whatsapp"
-                            />
-                            <Mail
-                              className={`w-5 h-5 ${
-                                order.touchpoints.email ? "text-email-gold" : "text-gray-300"
-                              }`}
-                              data-testid="touchpoint-email"
-                            />
-                            <MessageSquare
-                              className={`w-5 h-5 ${
-                                order.touchpoints.crisp ? "text-crisp-blue" : "text-gray-300"
-                              }`}
-                              data-testid="touchpoint-crisp"
-                            />
-                          </div>
-
-                          {touchpointCount > 0 && (
-                            <span className="text-sm text-muted-foreground" data-testid="touchpoint-count">
-                              {touchpointCount} touchpoint{touchpointCount !== 1 ? 's' : ''}
-                            </span>
-                          )}
-                        </div>
+                        {touchpointCount > 0 && (
+                          <span className="text-xs text-muted-foreground" data-testid="touchpoint-count">
+                            {touchpointCount}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </CardContent>
