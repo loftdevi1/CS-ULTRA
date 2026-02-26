@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Plus, BarChart3 } from "lucide-react";
+import { LayoutDashboard, Plus, BarChart3, Trash2 } from "lucide-react";
 
 export const Layout = ({ children }) => {
   const location = useLocation();
@@ -8,6 +8,7 @@ export const Layout = ({ children }) => {
     { path: "/", label: "Dashboard", icon: LayoutDashboard },
     { path: "/analytics", label: "Analytics", icon: BarChart3 },
     { path: "/create-order", label: "New Order", icon: Plus },
+    { path: "/manage-orders", label: "Manage Orders", icon: Trash2 },
   ];
 
   return (
