@@ -454,68 +454,61 @@ export default function Dashboard() {
             <div className="md:hidden divide-y divide-border/30">
               {filteredOrders.map((order) => {
                 const status = getOrderStatus(order.stages);
-                const fulfillment = getFulfillmentStatus(order.stages);
                 const totalItems = order.product_items.reduce((sum, item) => sum + item.quantity, 0);
                 
                 return (
                   <div
                     key={order.id}
-                    className="p-4 hover:bg-secondary/10 cursor-pointer transition-colors"
+                    className="p-3 hover:bg-secondary/10 cursor-pointer transition-colors"
                     onClick={() => navigate(`/orders/${order.id}`)}
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <Checkbox 
-                          checked={selectedOrders.includes(order.id)}
-                          onCheckedChange={() => toggleOrderSelection(order.id)}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium text-sm">#{order.order_number}</span>
+                    <div className="flex items-start gap-2 mb-2">
+                      <Checkbox 
+                        checked={selectedOrders.includes(order.id)}
+                        onCheckedChange={() => toggleOrderSelection(order.id)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="mt-0.5"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="font-medium text-sm truncate">#{order.order_number}</span>
                             {order.is_high_priority && (
-                              <Crown className="w-4 h-4 text-brand-gold" />
+                              <Crown className="w-3.5 h-3.5 text-brand-gold flex-shrink-0" />
                             )}
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {formatDate(order.order_date)}
-                          </p>
+                          <Badge className={`${status.color} text-xs flex-shrink-0`}>
+                            {status.label}
+                          </Badge>
                         </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-1">
-                        <Badge className={`${fulfillment.color} text-xs`}>
-                          {fulfillment.label}
-                        </Badge>
-                        <Badge className={`${status.color} text-xs`}>
-                          {status.label}
-                        </Badge>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div>
-                        <p className="text-sm font-medium">{order.customer_name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {totalItems} {totalItems === 1 ? 'item' : 'items'} • ${order.amount.toFixed(2)}
+                        
+                        <p className="text-xs text-muted-foreground mb-2">
+                          {formatDate(order.order_date)}
                         </p>
-                      </div>
-                      
-                      <div className="flex items-center gap-1.5">
-                        <MessageCircle
-                          className={`w-4 h-4 ${
-                            order.touchpoints.whatsapp ? "text-whatsapp-green" : "text-gray-300"
-                          }`}
-                        />
-                        <Mail
-                          className={`w-4 h-4 ${
-                            order.touchpoints.email ? "text-email-gold" : "text-gray-300"
-                          }`}
-                        />
-                        <MessageSquare
-                          className={`w-4 h-4 ${
-                            order.touchpoints.crisp ? "text-crisp-blue" : "text-gray-300"
-                          }`}
-                        />
+                        
+                        <p className="text-sm font-medium mb-1 truncate">{order.customer_name}</p>
+                        <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+                          <span>{totalItems} item{totalItems !== 1 ? 's' : ''}</span>
+                          <span className="font-medium text-brand-red">${order.amount.toFixed(2)}</span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <MessageCircle
+                            className={`w-3.5 h-3.5 ${
+                              order.touchpoints.whatsapp ? "text-whatsapp-green" : "text-gray-300"
+                            }`}
+                          />
+                          <Mail
+                            className={`w-3.5 h-3.5 ${
+                              order.touchpoints.email ? "text-email-gold" : "text-gray-300"
+                            }`}
+                          />
+                          <MessageSquare
+                            className={`w-3.5 h-3.5 ${
+                              order.touchpoints.crisp ? "text-crisp-blue" : "text-gray-300"
+                            }`}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
