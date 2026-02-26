@@ -330,6 +330,12 @@ export default function Dashboard() {
               >
                 High Priority
               </TabsTrigger>
+              <TabsTrigger 
+                value="completed"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent"
+              >
+                Completed
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </CardHeader>
