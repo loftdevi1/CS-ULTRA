@@ -21,7 +21,8 @@ import {
   MessageSquare, 
   Crown,
   Trash2,
-  AlertTriangle
+  AlertTriangle,
+  Archive
 } from "lucide-react";
 import { toast } from "sonner";
 
