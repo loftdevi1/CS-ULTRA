@@ -76,9 +76,6 @@ export default function Dashboard() {
         // Only show orders that haven't been dispatched yet
         filtered = filtered.filter(o => !o.stages.sent_to_delhi && !o.stages.left_xportel && !o.stages.reached_country && !o.stages.delivered);
         break;
-      case "pending":
-        filtered = filtered.filter(o => !o.stages.sent_to_delhi && !o.stages.delivered);
-        break;
       case "high_priority":
         filtered = filtered.filter(o => o.is_high_priority && !o.stages.delivered);
         break;
