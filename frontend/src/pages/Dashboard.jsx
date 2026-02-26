@@ -73,7 +73,8 @@ export default function Dashboard() {
     
     switch (tab) {
       case "unfulfilled":
-        filtered = filtered.filter(o => !o.stages.delivered);
+        // Only show orders that haven't been dispatched yet
+        filtered = filtered.filter(o => !o.stages.sent_to_delhi && !o.stages.left_xportel && !o.stages.reached_country && !o.stages.delivered);
         break;
       case "pending":
         filtered = filtered.filter(o => !o.stages.sent_to_delhi && !o.stages.delivered);
