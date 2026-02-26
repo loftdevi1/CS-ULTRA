@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus, X } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -16,30 +16,57 @@ export default function CreateOrder() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
+    order_number: "",
     order_date: new Date().toISOString().split('T')[0],
     customer_name: "",
     customer_email: "",
-    product_items: "",
-    quantity: 1,
-    sku: "",
     amount: 0,
     notes: "",
   });
+  const [productItems, setProductItems] = useState([{ name: "", quantity: 1, sku: "" }]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "quantity" || name === "amount" ? parseFloat(value) || 0 : value,
+      [name]: name === "amount" ? parseFloat(value) || 0 : value,
     }));
+  };
+
+  const handleProductChange = (index, field, value) => {
+    const updated = [...productItems];
+    updated[index][field] = field === "quantity" ? parseInt(value) || 1 : value;
+    setProductItems(updated);
+  };
+
+  const addProductItem = () => {
+    setProductItems([...productItems, { name: "", quantity: 1, sku: "" }]);
+  };
+
+  const removeProductItem = (index) => {
+    if (productItems.length > 1) {
+      setProductItems(productItems.filter((_, i) => i !== index));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    // Validate all product items are filled
+    const invalidItems = productItems.some(item => !item.name || !item.sku);
+    if (invalidItems) {
+      toast.error("Please fill all product item fields");
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.post(`${API}/orders`, formData);
+      const payload = {
+        ...formData,
+        product_items: productItems,
+      };
+      const response = await axios.post(`${API}/orders`, payload);
       toast.success("Order created successfully!");
       navigate(`/orders/${response.data.id}`);
     } catch (error) {
