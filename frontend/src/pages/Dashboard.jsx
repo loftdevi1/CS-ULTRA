@@ -173,7 +173,6 @@ export default function Dashboard() {
           <p className="text-muted-foreground text-sm mt-1">{stats.total} total orders</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm">Export</Button>
           <div className="relative">
             <Button 
               variant="outline" 
