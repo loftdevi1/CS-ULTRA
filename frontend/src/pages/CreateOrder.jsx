@@ -104,6 +104,19 @@ export default function CreateOrder() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
+                <Label htmlFor="order_number">Order Number</Label>
+                <Input
+                  id="order_number"
+                  name="order_number"
+                  value={formData.order_number}
+                  onChange={handleChange}
+                  placeholder="ORD-2024-001"
+                  required
+                  data-testid="input-order-number"
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="order_date">Order Date</Label>
                 <Input
                   id="order_date"
@@ -143,48 +156,8 @@ export default function CreateOrder() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="product_items">Product Items</Label>
-                <Input
-                  id="product_items"
-                  name="product_items"
-                  value={formData.product_items}
-                  onChange={handleChange}
-                  placeholder="Hand Embroidered Shawl"
-                  required
-                  data-testid="input-product-items"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="quantity">Quantity</Label>
-                <Input
-                  id="quantity"
-                  name="quantity"
-                  type="number"
-                  min="1"
-                  value={formData.quantity}
-                  onChange={handleChange}
-                  required
-                  data-testid="input-quantity"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="sku">SKU</Label>
-                <Input
-                  id="sku"
-                  name="sku"
-                  value={formData.sku}
-                  onChange={handleChange}
-                  placeholder="SHWL-001"
-                  required
-                  data-testid="input-sku"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="amount">Amount ($)</Label>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="amount">Total Amount ($)</Label>
                 <Input
                   id="amount"
                   name="amount"
@@ -197,6 +170,79 @@ export default function CreateOrder() {
                   data-testid="input-amount"
                 />
               </div>
+            </div>
+
+            {/* Product Items */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label className="text-base">Product Items</Label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={addProductItem}
+                  data-testid="add-product-item"
+                >
+                  <Plus className="w-4 h-4 mr-1" />
+                  Add Item
+                </Button>
+              </div>
+
+              {productItems.map((item, index) => (
+                <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 border border-border rounded-sm bg-secondary/10">
+                  <div className="md:col-span-5 space-y-2">
+                    <Label htmlFor={`item_name_${index}`}>Product Name</Label>
+                    <Input
+                      id={`item_name_${index}`}
+                      value={item.name}
+                      onChange={(e) => handleProductChange(index, "name", e.target.value)}
+                      placeholder="Hand Embroidered Shawl"
+                      required
+                      data-testid={`input-item-name-${index}`}
+                    />
+                  </div>
+
+                  <div className="md:col-span-2 space-y-2">
+                    <Label htmlFor={`item_quantity_${index}`}>Quantity</Label>
+                    <Input
+                      id={`item_quantity_${index}`}
+                      type="number"
+                      min="1"
+                      value={item.quantity}
+                      onChange={(e) => handleProductChange(index, "quantity", e.target.value)}
+                      required
+                      data-testid={`input-item-quantity-${index}`}
+                    />
+                  </div>
+
+                  <div className="md:col-span-4 space-y-2">
+                    <Label htmlFor={`item_sku_${index}`}>SKU</Label>
+                    <Input
+                      id={`item_sku_${index}`}
+                      value={item.sku}
+                      onChange={(e) => handleProductChange(index, "sku", e.target.value)}
+                      placeholder="SHWL-001"
+                      required
+                      data-testid={`input-item-sku-${index}`}
+                    />
+                  </div>
+
+                  {productItems.length > 1 && (
+                    <div className="md:col-span-1 flex items-end">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeProductItem(index)}
+                        className="text-destructive hover:text-destructive"
+                        data-testid={`remove-item-${index}`}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
 
             <div className="space-y-2">
