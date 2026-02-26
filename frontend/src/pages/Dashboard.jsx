@@ -61,8 +61,8 @@ export default function Dashboard() {
       "Delivered": "bg-green-100 text-green-800",
       "Reached Country": "bg-blue-100 text-blue-800",
       "In Transit": "bg-purple-100 text-purple-800",
-      "Sent to Delhi": "bg-indigo-100 text-indigo-800",
-      "Ready to Dispatch": "bg-yellow-100 text-yellow-800",
+      "Dispatched": "bg-indigo-100 text-indigo-800",
+      "Ready": "bg-yellow-100 text-yellow-800",
       "Washing": "bg-cyan-100 text-cyan-800",
       "Customizing": "bg-orange-100 text-orange-800",
       "In Embroidery": "bg-pink-100 text-pink-800",
@@ -71,8 +71,9 @@ export default function Dashboard() {
     return colors[status] || "bg-gray-100 text-gray-800";
   };
 
-  const highPriorityOrders = orders.filter((order) => order.is_high_priority);
-  const pendingOrders = orders.filter((order) => !order.stages.delivered);
+  const allOrders = orders;
+  const highPriorityOrders = allOrders.filter((order) => order.is_high_priority);
+  const pendingOrders = allOrders.filter((order) => !order.stages.sent_to_delhi && !order.stages.delivered);
 
   if (loading) {
     return (
