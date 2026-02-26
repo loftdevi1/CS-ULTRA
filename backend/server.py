@@ -131,12 +131,37 @@ async def create_order(input: OrderCreate):
 async def get_orders(filter: Optional[str] = None):
     orders = await db.orders.find({}, {"_id": 0}).to_list(1000)
     
-    # Convert ISO string timestamps back to datetime objects
+    # Convert ISO string timestamps back to datetime objects and handle legacy data
     for order in orders:
         if isinstance(order['created_at'], str):
             order['created_at'] = datetime.fromisoformat(order['created_at'])
         if isinstance(order['last_updated'], str):
             order['last_updated'] = datetime.fromisoformat(order['last_updated'])
+        
+        # Handle legacy orders without order_number
+        if 'order_number' not in order or not order['order_number']:
+            order['order_number'] = f"ORD-{order['id'][:8]}"
+        
+        # Handle legacy orders with string product_items instead of list
+        if 'product_items' in order and isinstance(order['product_items'], str):
+            # Convert old string format to new list format
+            order['product_items'] = [{
+                "name": order['product_items'],
+                "quantity": order.get('quantity', 1),
+                "sku": order.get('sku', '')
+            }]
+        
+        # Ensure product_items exists
+        if 'product_items' not in order:
+            order['product_items'] = []
+        
+        # Ensure custom_reminder exists
+        if 'custom_reminder' not in order:
+            order['custom_reminder'] = {"days": 0, "time": "", "note": "", "is_active": False}
+        
+        # Ensure touchpoints.notes exists
+        if 'touchpoints' in order and 'notes' not in order['touchpoints']:
+            order['touchpoints']['notes'] = ""
     
     # Sort by created_at descending (newest first)
     orders.sort(key=lambda x: x['created_at'], reverse=True)
