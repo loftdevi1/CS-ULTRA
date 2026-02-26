@@ -185,33 +185,33 @@ export default function OrderDetail() {
   };
 
   return (
-    <div className="p-6 md:p-10 max-w-7xl mx-auto" data-testid="order-detail-page">
+    <div className="p-4 md:p-6 lg:p-10 max-w-7xl mx-auto" data-testid="order-detail-page">
       <Button
         variant="ghost"
         onClick={() => navigate("/")}
-        className="mb-6"
+        className="mb-4 md:mb-6"
         data-testid="back-button"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Dashboard
+        Back
       </Button>
 
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-4xl md:text-5xl font-serif font-medium tracking-tight" data-testid="order-customer-name">
+      <div className="mb-6 md:mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-serif font-medium tracking-tight" data-testid="order-customer-name">
             {order.customer_name}
           </h1>
           {order.is_high_priority && (
-            <Badge className="bg-brand-gold text-white border-brand-gold" data-testid="high-priority-badge">
+            <Badge className="bg-brand-gold text-white border-brand-gold w-fit" data-testid="high-priority-badge">
               <Crown className="w-4 h-4 mr-1" />
               High Priority
             </Badge>
           )}
         </div>
-        <p className="text-muted-foreground tracking-wide">Order #{order.order_number} • {order.id}</p>
+        <p className="text-sm md:text-base text-muted-foreground tracking-wide">Order #{order.order_number} • {order.id}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Order Details */}
         <div className="lg:col-span-2 space-y-6">
           <Card className="border-border shadow-md">
