@@ -306,40 +306,42 @@ export default function Dashboard() {
 
       {/* Active Orders Section */}
       <Card className="border-border mb-6">
-        <CardHeader className="border-b border-border/50 pb-0 px-2 md:px-6">
+        <CardHeader className="border-b border-border/50 pb-0 px-0 md:px-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-transparent border-0 p-0 h-auto w-full flex justify-start overflow-x-auto">
-              <TabsTrigger 
-                value="all" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent text-xs md:text-sm px-3 md:px-4 whitespace-nowrap"
-              >
-                All
-              </TabsTrigger>
-              <TabsTrigger 
-                value="unfulfilled"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent text-xs md:text-sm px-3 md:px-4 whitespace-nowrap"
-              >
-                Unfulfilled
-              </TabsTrigger>
-              <TabsTrigger 
-                value="pending"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent text-xs md:text-sm px-2 md:px-4 whitespace-nowrap"
-              >
-                Pending
-              </TabsTrigger>
-              <TabsTrigger 
-                value="high_priority"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent text-xs md:text-sm px-3 md:px-4 whitespace-nowrap"
-              >
-                Priority
-              </TabsTrigger>
-              <TabsTrigger 
-                value="completed"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent text-xs md:text-sm px-3 md:px-4 whitespace-nowrap"
-              >
-                Done
-              </TabsTrigger>
-            </TabsList>
+            <div className="overflow-x-auto scrollbar-hide">
+              <TabsList className="bg-transparent border-0 p-0 h-auto w-full flex justify-start px-2 md:px-0">
+                <TabsTrigger 
+                  value="all" 
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent text-xs md:text-sm px-3 md:px-4 whitespace-nowrap"
+                >
+                  All
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="unfulfilled"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent text-xs md:text-sm px-3 md:px-4 whitespace-nowrap"
+                >
+                  Unfulfilled
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="pending"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent text-xs md:text-sm px-3 md:px-4 whitespace-nowrap"
+                >
+                  Pending
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="high_priority"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent text-xs md:text-sm px-3 md:px-4 whitespace-nowrap"
+                >
+                  Priority
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="completed"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent text-xs md:text-sm px-3 md:px-4 whitespace-nowrap"
+                >
+                  Done
+                </TabsTrigger>
+              </TabsList>
+            </div>
           </Tabs>
         </CardHeader>
         <CardContent className="p-0">
