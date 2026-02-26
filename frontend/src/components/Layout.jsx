@@ -1,12 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Plus, Bell } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { LayoutDashboard, Plus, BarChart3 } from "lucide-react";
 
 export const Layout = ({ children }) => {
   const location = useLocation();
 
   const navItems = [
     { path: "/", label: "Dashboard", icon: LayoutDashboard },
+    { path: "/analytics", label: "Analytics", icon: BarChart3 },
     { path: "/create-order", label: "New Order", icon: Plus },
   ];
 
