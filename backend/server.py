@@ -79,11 +79,11 @@ class Order(BaseModel):
     model_config = ConfigDict(extra="ignore")
     
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    order_number: str
+    order_number: str = ""
     order_date: str
     customer_name: str
     customer_email: str
-    product_items: List[ProductItem]
+    product_items: List[ProductItem] = Field(default_factory=list)
     amount: float
     notes: str = ""
     touchpoints: Touchpoints = Field(default_factory=Touchpoints)
