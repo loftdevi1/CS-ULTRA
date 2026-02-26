@@ -37,6 +37,7 @@ class Touchpoints(BaseModel):
     whatsapp: bool = False
     email: bool = False
     crisp: bool = False
+    notes: str = ""
 
 class OrderStage(BaseModel):
     in_embroidery: bool = False
