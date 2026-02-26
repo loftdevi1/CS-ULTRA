@@ -114,6 +114,23 @@ export default function ManageOrders() {
     setShowBulkDeleteDialog(true);
   };
 
+  const handleBulkArchive = async () => {
+    if (selectedOrders.length === 0) {
+      toast.error("Please select orders to archive");
+      return;
+    }
+
+    try {
+      await axios.post(`${API}/orders/bulk-archive`, selectedOrders);
+      toast.success(`${selectedOrders.length} orders archived`);
+      setOrders(orders.filter(o => !selectedOrders.includes(o.id)));
+      setSelectedOrders([]);
+    } catch (error) {
+      console.error("Failed to archive orders:", error);
+      toast.error("Failed to archive orders");
+    }
+  };
+
   const confirmBulkDelete = async () => {
     try {
       await axios.post(`${API}/orders/bulk-delete`, selectedOrders);
