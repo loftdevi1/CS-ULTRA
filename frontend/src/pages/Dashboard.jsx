@@ -4,29 +4,48 @@ import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, Mail, MessageSquare, Crown, Clock, Package } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  MessageCircle, 
+  Mail, 
+  MessageSquare, 
+  Crown, 
+  Clock, 
+  Package,
+  Bell,
+  X,
+  TrendingUp,
+  CheckCircle2
+} from "lucide-react";
 import { toast } from "sonner";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 export default function Dashboard() {
-  const [orders, setOrders] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [reminders, setReminders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState(null);
+  const [activeTab, setActiveTab] = useState("all");
+  const [selectedOrders, setSelectedOrders] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchOrders(filter);
+    fetchOrders();
     fetchReminders();
-  }, [filter]);
+  }, []);
 
-  const fetchOrders = async (filterType = null) => {
+  useEffect(() => {
+    applyFilter(activeTab);
+  }, [allOrders, activeTab]);
+
+  const fetchOrders = async () => {
     try {
-      const url = filterType ? `${API}/orders?filter=${filterType}` : `${API}/orders`;
-      const response = await axios.get(url);
-      setOrders(response.data);
+      const response = await axios.get(`${API}/orders`);
+      setAllOrders(response.data);
     } catch (error) {
       console.error("Failed to fetch orders:", error);
       toast.error("Failed to load orders");
@@ -44,243 +63,458 @@ export default function Dashboard() {
     }
   };
 
+  const applyFilter = (tab) => {
+    let filtered = [...allOrders];
+    
+    switch (tab) {
+      case "unfulfilled":
+        filtered = filtered.filter(o => !o.stages.delivered);
+        break;
+      case "pending":
+        filtered = filtered.filter(o => !o.stages.sent_to_delhi && !o.stages.delivered);
+        break;
+      case "high_priority":
+        filtered = filtered.filter(o => o.is_high_priority);
+        break;
+      case "completed":
+        filtered = filtered.filter(o => o.stages.delivered);
+        break;
+      case "all":
+      default:
+        // Show all except delivered
+        filtered = filtered.filter(o => !o.stages.delivered);
+        break;
+    }
+    
+    setFilteredOrders(filtered);
+  };
+
   const getOrderStatus = (stages) => {
-    if (stages.delivered) return "Delivered";
-    if (stages.reached_country) return "Reached Country";
-    if (stages.left_xportel) return "In Transit";
-    if (stages.sent_to_delhi) return "Dispatched";
-    if (stages.ready_to_dispatch) return "Ready";
-    if (stages.washing) return "Washing";
-    if (stages.customizing) return "Customizing";
-    if (stages.in_embroidery) return "In Embroidery";
-    return "Not Started";
+    if (stages.delivered) return { label: "Delivered", color: "bg-green-100 text-green-800" };
+    if (stages.reached_country) return { label: "In Transit", color: "bg-blue-100 text-blue-800" };
+    if (stages.sent_to_delhi) return { label: "Dispatched", color: "bg-purple-100 text-purple-800" };
+    if (stages.ready_to_dispatch) return { label: "Ready", color: "bg-cyan-100 text-cyan-800" };
+    if (stages.washing) return { label: "Washing", color: "bg-orange-100 text-orange-800" };
+    if (stages.customizing) return { label: "Customizing", color: "bg-yellow-100 text-yellow-800" };
+    if (stages.in_embroidery) return { label: "In Progress", color: "bg-pink-100 text-pink-800" };
+    return { label: "Unfulfilled", color: "bg-yellow-100 text-yellow-800" };
   };
 
-  const getStatusColor = (status) => {
-    const colors = {
-      "Delivered": "bg-green-100 text-green-800",
-      "Reached Country": "bg-blue-100 text-blue-800",
-      "In Transit": "bg-purple-100 text-purple-800",
-      "Dispatched": "bg-indigo-100 text-indigo-800",
-      "Ready": "bg-yellow-100 text-yellow-800",
-      "Washing": "bg-cyan-100 text-cyan-800",
-      "Customizing": "bg-orange-100 text-orange-800",
-      "In Embroidery": "bg-pink-100 text-pink-800",
-      "Not Started": "bg-gray-100 text-gray-800",
-    };
-    return colors[status] || "bg-gray-100 text-gray-800";
+  const getFulfillmentStatus = (stages) => {
+    if (stages.delivered) return { label: "Fulfilled", color: "bg-gray-100 text-gray-800" };
+    return { label: "Unfulfilled", color: "bg-yellow-100 text-yellow-800" };
   };
 
-  const allOrders = orders;
-  const highPriorityOrders = allOrders.filter((order) => order.is_high_priority);
-  const pendingOrders = allOrders.filter((order) => !order.stages.sent_to_delhi && !order.stages.delivered);
+  const toggleOrderSelection = (orderId) => {
+    setSelectedOrders(prev => 
+      prev.includes(orderId) 
+        ? prev.filter(id => id !== orderId)
+        : [...prev, orderId]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedOrders.length === filteredOrders.length) {
+      setSelectedOrders([]);
+    } else {
+      setSelectedOrders(filteredOrders.map(o => o.id));
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    if (date.toDateString() === today.toDateString()) {
+      return `Today at ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return `Yesterday at ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
+    } else {
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+  };
+
+  // Calculate stats
+  const stats = {
+    total: allOrders.length,
+    unfulfilled: allOrders.filter(o => !o.stages.delivered).length,
+    pending: allOrders.filter(o => !o.stages.sent_to_delhi && !o.stages.delivered).length,
+    highPriority: allOrders.filter(o => o.is_high_priority).length,
+    completed: allOrders.filter(o => o.stages.delivered).length,
+    totalItems: allOrders.reduce((sum, o) => sum + o.product_items.reduce((s, i) => s + i.quantity, 0), 0)
+  };
+
+  const completedOrders = allOrders.filter(o => o.stages.delivered);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen" data-testid="loading-state">
+      <div className="flex items-center justify-center min-h-screen">
         <p className="text-muted-foreground">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="p-6 md:p-10 max-w-[1600px] mx-auto" data-testid="dashboard">
+    <div className="p-6 max-w-[1800px] mx-auto" data-testid="dashboard">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl md:text-5xl font-serif font-medium tracking-tight mb-2" data-testid="dashboard-title">
-          Dashboard
-        </h1>
-        <p className="text-muted-foreground tracking-wide">Overview of all orders and customer touchpoints</p>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" data-testid="stats-grid">
-        <Card
-          className={`border-border shadow-sm hover:shadow-md transition-all cursor-pointer ${filter === null ? 'ring-2 ring-brand-red' : ''}`}
-          onClick={() => setFilter(null)}
-          data-testid="stat-total-orders"
-        >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-sans text-muted-foreground tracking-widest uppercase">Total Orders</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <Package className="w-8 h-8 text-brand-red" />
-              <span className="text-4xl font-serif font-medium">{allOrders.length}</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card
-          className={`border-border shadow-sm hover:shadow-md transition-all cursor-pointer ${filter === 'pending' ? 'ring-2 ring-yellow-600' : ''}`}
-          onClick={() => setFilter('pending')}
-          data-testid="stat-pending-dispatch"
-        >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-sans text-muted-foreground tracking-widest uppercase">Pending Dispatch</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <Clock className="w-8 h-8 text-yellow-600" />
-              <span className="text-4xl font-serif font-medium">{pendingOrders.length}</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card
-          className={`border-border shadow-sm hover:shadow-md transition-all cursor-pointer ${filter === 'high_priority' ? 'ring-2 ring-brand-gold' : ''}`}
-          onClick={() => setFilter('high_priority')}
-          data-testid="stat-high-priority"
-        >
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-sans text-muted-foreground tracking-widest uppercase">High Priority</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
-              <Crown className="w-8 h-8 text-brand-gold" />
-              <span className="text-4xl font-serif font-medium">{highPriorityOrders.length}</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Reminders */}
-      {reminders.length > 0 && (
-        <Card className="mb-8 border-destructive bg-red-50" data-testid="reminders-card">
-          <CardHeader>
-            <CardTitle className="text-lg font-serif flex items-center gap-2">
-              <Clock className="w-5 h-5 text-destructive" />
-              Orders Needing Updates
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {reminders.map((reminder) => (
-                <div
-                  key={reminder.order_id}
-                  className="flex items-center justify-between p-3 bg-white rounded border border-destructive/20"
-                  data-testid={`reminder-${reminder.order_id}`}
-                >
-                  <div>
-                    <p className="font-medium">{reminder.customer_name}</p>
-                    <p className="text-sm text-muted-foreground">Last updated {reminder.days_since_update} days ago</p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-serif font-medium tracking-tight">Orders</h1>
+          <p className="text-muted-foreground text-sm mt-1">{stats.total} total orders</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="sm">Export</Button>
+          <div className="relative">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="relative"
+            >
+              <Bell className="w-4 h-4 mr-2" />
+              Notifications
+              {reminders.length > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  {reminders.length}
+                </span>
+              )}
+            </Button>
+            
+            {/* Notifications Dropdown */}
+            {showNotifications && (
+              <Card className="absolute right-0 top-12 w-96 shadow-xl z-50 border-border">
+                <CardHeader className="pb-3 border-b border-border/50">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg font-serif">Notifications</CardTitle>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => setShowNotifications(false)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
                   </div>
-                  <Button
-                    onClick={() => navigate(`/orders/${reminder.order_id}`)}
-                    size="sm"
-                    data-testid={`view-reminder-${reminder.order_id}`}
-                  >
-                    Update
-                  </Button>
+                </CardHeader>
+                <CardContent className="p-0 max-h-96 overflow-auto">
+                  {reminders.length === 0 ? (
+                    <div className="p-6 text-center text-muted-foreground">
+                      <Bell className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">No pending reminders</p>
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-border/50">
+                      {reminders.map((reminder) => (
+                        <div 
+                          key={reminder.order_id}
+                          className="p-4 hover:bg-secondary/20 cursor-pointer transition-colors"
+                          onClick={() => {
+                            navigate(`/orders/${reminder.order_id}`);
+                            setShowNotifications(false);
+                          }}
+                        >
+                          <div className="flex items-start gap-3">
+                            <Clock className="w-5 h-5 text-yellow-600 mt-0.5" />
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">{reminder.customer_name}</p>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Last updated {reminder.days_since_update} days ago
+                              </p>
+                              <p className="text-xs text-brand-red font-medium mt-1">
+                                ${reminder.amount.toFixed(2)}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+          <Button onClick={() => navigate("/create-order")} data-testid="create-order-btn">
+            Create order
+          </Button>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <Card className="border-border">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Orders</p>
+                <p className="text-2xl font-serif font-medium">{stats.unfulfilled}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <TrendingUp className="w-3 h-3 text-green-600" />
+                  <span className="text-xs text-green-600">+50%</span>
                 </div>
-              ))}
+              </div>
+              <Package className="w-8 h-8 text-brand-red opacity-20" />
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Items ordered</p>
+                <p className="text-2xl font-serif font-medium">{stats.totalItems}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <TrendingUp className="w-3 h-3 text-green-600" />
+                  <span className="text-xs text-green-600">+50%</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">Orders fulfilled</p>
+                <p className="text-2xl font-serif font-medium">{stats.completed}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1">High Priority</p>
+                <p className="text-2xl font-serif font-medium">{stats.highPriority}</p>
+              </div>
+              <Crown className="w-8 h-8 text-brand-gold opacity-20" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Active Orders Section */}
+      <Card className="border-border mb-6">
+        <CardHeader className="border-b border-border/50 pb-0">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="bg-transparent border-0 p-0 h-auto">
+              <TabsTrigger 
+                value="all" 
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent"
+              >
+                All
+              </TabsTrigger>
+              <TabsTrigger 
+                value="unfulfilled"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent"
+              >
+                Unfulfilled
+              </TabsTrigger>
+              <TabsTrigger 
+                value="pending"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent"
+              >
+                Pending Dispatch
+              </TabsTrigger>
+              <TabsTrigger 
+                value="high_priority"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-brand-red data-[state=active]:bg-transparent"
+              >
+                High Priority
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </CardHeader>
+        <CardContent className="p-0">
+          {filteredOrders.length === 0 ? (
+            <div className="p-12 text-center">
+              <Package className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-50" />
+              <p className="text-muted-foreground mb-4">No orders in this category</p>
+              <Button onClick={() => navigate("/create-order")}>Create Your First Order</Button>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="border-b border-border/50">
+                  <tr className="text-left text-xs text-muted-foreground">
+                    <th className="p-3 font-medium w-12">
+                      <Checkbox 
+                        checked={selectedOrders.length === filteredOrders.length}
+                        onCheckedChange={toggleSelectAll}
+                      />
+                    </th>
+                    <th className="p-3 font-medium">Order</th>
+                    <th className="p-3 font-medium">Date</th>
+                    <th className="p-3 font-medium">Customer</th>
+                    <th className="p-3 font-medium">Total</th>
+                    <th className="p-3 font-medium">Fulfillment</th>
+                    <th className="p-3 font-medium">Items</th>
+                    <th className="p-3 font-medium">Status</th>
+                    <th className="p-3 font-medium">Contact</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/30">
+                  {filteredOrders.map((order) => {
+                    const status = getOrderStatus(order.stages);
+                    const fulfillment = getFulfillmentStatus(order.stages);
+                    const totalItems = order.product_items.reduce((sum, item) => sum + item.quantity, 0);
+                    
+                    return (
+                      <tr 
+                        key={order.id}
+                        className="hover:bg-secondary/10 cursor-pointer transition-colors"
+                        onClick={(e) => {
+                          if (!e.target.closest('input[type="checkbox"]')) {
+                            navigate(`/orders/${order.id}`);
+                          }
+                        }}
+                      >
+                        <td className="p-3">
+                          <Checkbox 
+                            checked={selectedOrders.includes(order.id)}
+                            onCheckedChange={() => toggleOrderSelection(order.id)}
+                          />
+                        </td>
+                        <td className="p-3">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-sm">#{order.order_number}</span>
+                            {order.is_high_priority && (
+                              <Crown className="w-4 h-4 text-brand-gold" />
+                            )}
+                          </div>
+                        </td>
+                        <td className="p-3 text-sm text-muted-foreground">
+                          {formatDate(order.order_date)}
+                        </td>
+                        <td className="p-3 text-sm font-medium">
+                          {order.customer_name}
+                        </td>
+                        <td className="p-3 text-sm font-medium">
+                          ${order.amount.toFixed(2)}
+                        </td>
+                        <td className="p-3">
+                          <Badge className={`${fulfillment.color} text-xs`}>
+                            {fulfillment.label}
+                          </Badge>
+                        </td>
+                        <td className="p-3 text-sm text-muted-foreground">
+                          {totalItems} {totalItems === 1 ? 'item' : 'items'}
+                        </td>
+                        <td className="p-3">
+                          <Badge className={`${status.color} text-xs`}>
+                            {status.label}
+                          </Badge>
+                        </td>
+                        <td className="p-3">
+                          <div className="flex items-center gap-1.5">
+                            <MessageCircle
+                              className={`w-4 h-4 ${
+                                order.touchpoints.whatsapp ? "text-whatsapp-green" : "text-gray-300"
+                              }`}
+                            />
+                            <Mail
+                              className={`w-4 h-4 ${
+                                order.touchpoints.email ? "text-email-gold" : "text-gray-300"
+                              }`}
+                            />
+                            <MessageSquare
+                              className={`w-4 h-4 ${
+                                order.touchpoints.crisp ? "text-crisp-blue" : "text-gray-300"
+                              }`}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Completed Orders Section */}
+      {completedOrders.length > 0 && (
+        <Card className="border-border">
+          <CardHeader className="border-b border-border/50">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-green-600" />
+              <CardTitle className="text-lg font-serif">Completed Orders ({completedOrders.length})</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="border-b border-border/50">
+                  <tr className="text-left text-xs text-muted-foreground">
+                    <th className="p-3 font-medium">Order</th>
+                    <th className="p-3 font-medium">Date</th>
+                    <th className="p-3 font-medium">Customer</th>
+                    <th className="p-3 font-medium">Total</th>
+                    <th className="p-3 font-medium">Items</th>
+                    <th className="p-3 font-medium">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/30">
+                  {completedOrders.slice(0, 5).map((order) => {
+                    const totalItems = order.product_items.reduce((sum, item) => sum + item.quantity, 0);
+                    
+                    return (
+                      <tr 
+                        key={order.id}
+                        className="hover:bg-secondary/10 cursor-pointer transition-colors"
+                        onClick={() => navigate(`/orders/${order.id}`)}
+                      >
+                        <td className="p-3">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-sm">#{order.order_number}</span>
+                            {order.is_high_priority && (
+                              <Crown className="w-4 h-4 text-brand-gold" />
+                            )}
+                          </div>
+                        </td>
+                        <td className="p-3 text-sm text-muted-foreground">
+                          {formatDate(order.order_date)}
+                        </td>
+                        <td className="p-3 text-sm font-medium">
+                          {order.customer_name}
+                        </td>
+                        <td className="p-3 text-sm font-medium">
+                          ${order.amount.toFixed(2)}
+                        </td>
+                        <td className="p-3 text-sm text-muted-foreground">
+                          {totalItems} {totalItems === 1 ? 'item' : 'items'}
+                        </td>
+                        <td className="p-3">
+                          <Badge className="bg-green-100 text-green-800 text-xs">
+                            Delivered
+                          </Badge>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            {completedOrders.length > 5 && (
+              <div className="p-4 text-center border-t border-border/30">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => setActiveTab("completed")}
+                >
+                  View all {completedOrders.length} completed orders
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
-
-      {/* Orders List */}
-      <div className="space-y-6" data-testid="orders-list">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-serif font-medium">All Orders</h2>
-          <Button onClick={() => navigate("/create-order")} data-testid="create-order-btn">
-            Create New Order
-          </Button>
-        </div>
-
-        {orders.length === 0 ? (
-          <Card className="p-12 text-center" data-testid="no-orders">
-            <p className="text-muted-foreground mb-4">No orders yet</p>
-            <Button onClick={() => navigate("/create-order")} data-testid="create-first-order-btn">
-              Create Your First Order
-            </Button>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 gap-3">
-            {orders.map((order) => {
-              const status = getOrderStatus(order.stages);
-              const touchpointCount = [order.touchpoints.whatsapp, order.touchpoints.email, order.touchpoints.crisp].filter(Boolean).length;
-              const totalItems = order.product_items.reduce((sum, item) => sum + item.quantity, 0);
-              
-              return (
-                <Card
-                  key={order.id}
-                  className="border-border hover:shadow-md transition-all cursor-pointer"
-                  onClick={() => navigate(`/orders/${order.id}`)}
-                  data-testid={`order-card-${order.id}`}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-4 flex-wrap">
-                      {/* Left: Customer Info */}
-                      <div className="flex-1 min-w-[200px]">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-lg font-serif font-medium" data-testid="order-customer-name">{order.customer_name}</h3>
-                          {order.is_high_priority && (
-                            <Badge className="bg-brand-gold text-white border-brand-gold text-xs" data-testid="high-priority-badge">
-                              <Crown className="w-3 h-3 mr-1" />
-                              VIP
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-xs text-muted-foreground">Order #{order.order_number}</p>
-                      </div>
-
-                      {/* Middle: Order Details */}
-                      <div className="flex gap-6 text-sm">
-                        <div>
-                          <p className="text-muted-foreground text-xs">Date</p>
-                          <p className="font-medium" data-testid="order-date">{order.order_date}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground text-xs">Items</p>
-                          <p className="font-medium" data-testid="order-items">{totalItems} item{totalItems !== 1 ? 's' : ''}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground text-xs">Amount</p>
-                          <p className="font-medium text-brand-red" data-testid="order-amount">${order.amount.toFixed(2)}</p>
-                        </div>
-                      </div>
-
-                      {/* Right: Status & Touchpoints */}
-                      <div className="flex items-center gap-4">
-                        <Badge className={getStatusColor(status)} data-testid="order-status">{status}</Badge>
-                        
-                        {/* Touchpoint Icons */}
-                        <div className="flex items-center gap-1.5" data-testid="touchpoint-indicators">
-                          <MessageCircle
-                            className={`w-4 h-4 ${
-                              order.touchpoints.whatsapp ? "text-whatsapp-green" : "text-gray-300"
-                            }`}
-                            data-testid="touchpoint-whatsapp"
-                          />
-                          <Mail
-                            className={`w-4 h-4 ${
-                              order.touchpoints.email ? "text-email-gold" : "text-gray-300"
-                            }`}
-                            data-testid="touchpoint-email"
-                          />
-                          <MessageSquare
-                            className={`w-4 h-4 ${
-                              order.touchpoints.crisp ? "text-crisp-blue" : "text-gray-300"
-                            }`}
-                            data-testid="touchpoint-crisp"
-                          />
-                        </div>
-
-                        {touchpointCount > 0 && (
-                          <span className="text-xs text-muted-foreground" data-testid="touchpoint-count">
-                            {touchpointCount}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
-      </div>
     </div>
   );
 }
