@@ -53,6 +53,7 @@ export default function Analytics() {
 
   const fetchOrders = async () => {
     try {
+      const API = "https://cs-ultra-backend.onrender.com/api";
       const response = await axios.get(`${API}/orders`);
       setAllOrders(response.data);
     } catch (error) {
