@@ -350,8 +350,10 @@ export default function Dashboard() {
               <Button onClick={() => navigate("/create-order")}>Create Your First Order</Button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
                 <thead className="border-b border-border/50">
                   <tr className="text-left text-xs text-muted-foreground">
                     <th className="p-3 font-medium w-12">
